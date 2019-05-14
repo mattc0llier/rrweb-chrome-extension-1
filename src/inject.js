@@ -15,6 +15,7 @@ rrwebRecord({
   emit: event => {
     event.sessionId = sessionId;
     snapshots.push(event);
+    console.log('rrweb ext', event);
   }
 });
 
@@ -23,13 +24,18 @@ function save() {
     events: snapshots
   });
   snapshots = [];
-  fetch("http://192.168.17.205:9090/api/events", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body
-  });
+  console.log('rrweb ext save', body);
+
+  fetch('http://localhost:3000/api/record', {
+   method: 'post',
+   body: JSON.stringify(tab),
+   headers: {
+     'Content-Type': 'application/json'
+   },
+   mode: "cors"
+ }).then(function(response) {
+   return response.json();
+ })
 }
-setInterval(save, 5 * 1000);
+setInterval(save, 1 * 1000);
 window.addEventListener('beforeunload', save);
